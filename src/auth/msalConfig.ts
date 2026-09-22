@@ -18,7 +18,7 @@ export const msalConfig: Configuration = {
         authority: "https://login.microsoftonline.com/f9bce5c0-eb96-4341-aad7-411ae980b12a",
 
         // Debe coincidir EXACTAMENTE con el Redirect URI de Entra ID
-        redirectUri: "http://localhost:5500"
+        redirectUri: "http://localhost:5173"
     },
 
     cache: {
@@ -61,4 +61,4 @@ export const apiRequest: SilentRequest = {
 
 // Cuando corre a través de Nginx (puerto 5500), las llamadas a /api/...
 // se redirigen automáticamente a ms-catalog o ms-orders según la ruta.
-export const API_BASE_URL = window.location.port === "5500" ? "" : "http://localhost:8080";
+export const API_BASE_URL = "https://u1ckcthd4l.execute-api.us-east-1.amazonaws.com";
