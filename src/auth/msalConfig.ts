@@ -1,8 +1,4 @@
-import type {
-    Configuration,
-    PopupRequest,
-    SilentRequest
-} from "@azure/msal-browser";
+import type { Configuration, RedirectRequest, SilentRequest } from "@azure/msal-browser";
 
 // ============================================================
 //  CONFIGURACIÓN DE MSAL — Microsoft Entra ID
@@ -18,8 +14,8 @@ export const msalConfig: Configuration = {
         // Client ID de "CloudNative Frontend"
         clientId: "4283d60a-867f-4bfa-b154-8fdc4e626bbe",
 
-        // Multitenant: permite cuentas de organizaciones Entra ID
-        authority: "https://login.microsoftonline.com/organizations",
+        // Tenant de Entra ID configurado en el backend
+        authority: "https://login.microsoftonline.com/f9bce5c0-eb96-4341-aad7-411ae980b12a",
 
         // Debe coincidir EXACTAMENTE con el Redirect URI de Entra ID
         redirectUri: "http://localhost:5500"
@@ -38,7 +34,7 @@ export const msalConfig: Configuration = {
 
 // Permisos solicitados al iniciar sesión.
 // openid + profile permiten obtener la identidad básica del usuario.
-export const loginRequest: PopupRequest = {
+export const loginRequest: RedirectRequest = {
     scopes: ["openid", "profile"]
 };
 
@@ -53,33 +49,16 @@ export const loginRequest: PopupRequest = {
 // Este ID corresponde a CloudNative Api,
 // NO a CloudNative Frontend.
 //
-// El token obtenido será enviado posteriormente al backend como:
-//
+// El token obtenido será enviado al backend como:
 // Authorization: Bearer <access_token>
 //
-export const apiRequest = {
+export const apiRequest: SilentRequest = {
     scopes: [
         "api://c1e3acd7-4501-432e-a446-71ab2dca8ac3/access_as_user"
     ]
 };
 
 
-// ============================================================
-//  BACKEND
-// ============================================================
-
-// Durante desarrollo:
-// Frontend → localhost:8080
-//
-// Cuando integremos AWS:
-//
-// Frontend
-//    ↓
-// API Gateway
-//    ↓
-// Microservicios
-//
-// Solo tendremos que cambiar esta URL.
-
-export const API_URL: string =
-    "http://localhost:8080/api/privado/test";
+// Cuando corre a través de Nginx (puerto 5500), las llamadas a /api/...
+// se redirigen automáticamente a ms-catalog o ms-orders según la ruta.
+export const API_BASE_URL = window.location.port === "5500" ? "" : "http://localhost:8080";

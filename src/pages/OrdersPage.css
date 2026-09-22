@@ -1,0 +1,67 @@
+.orders-page {
+    padding: 32px;
+    text-align: left;
+}
+
+.orders-page h2 {
+    margin-bottom: 24px;
+}
+
+.orders-table-wrapper {
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.orders-table th,
+.orders-table td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.orders-table th {
+    font-weight: 600;
+    color: var(--text-h);
+    background: var(--code-bg);
+}
+
+.orders-table tr.updating {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.status-select {
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-h);
+    cursor: pointer;
+}
+
+.btn-danger {
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #ef4444;
+    background: transparent;
+    color: #ef4444;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #ef4444;
+    color: #fff;
+}
+
+.btn-danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
