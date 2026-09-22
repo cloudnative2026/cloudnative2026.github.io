@@ -56,6 +56,7 @@ export interface OrderItem {
     productId: number;
     quantity: number;
     unitPrice: number;
+    product?: Product | null;
 }
 
 export interface Order {
