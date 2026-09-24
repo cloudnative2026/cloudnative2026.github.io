@@ -65,3 +65,7 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.cart-line { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 1rem 0; }
+.orders-page fieldset { border: 1px solid #ccc; padding: 1rem; }
+.orders-page input { margin: .5rem; padding: .4rem; max-width: 10rem; }

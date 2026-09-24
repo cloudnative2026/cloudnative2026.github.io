@@ -1,3 +1,4 @@
+import { useCart } from "../cart/useCart";
 import { useEffect, useState } from "react";
 import { useApiToken } from "../auth/authHelpers";
 import { catalogApi, type Product } from "../api/client";
@@ -10,6 +11,7 @@ import "./CatalogPage.css";
 
 export default function CatalogPage() {
     const getToken = useApiToken();
+    const cart = useCart();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -59,6 +61,7 @@ export default function CatalogPage() {
                                 <span className="product-stock">Stock: {p.stock}</span>
                                 {!p.active && <span className="badge-inactive">Inactive</span>}
                             </div>
+                            <button type="button" disabled={!p.active || p.stock < 1 || (cart.items.find(i => i.product.id === p.id)?.quantity ?? 0) >= Math.min(p.stock, 100000) || (cart.items.length >= 100 && !cart.items.some(i => i.product.id === p.id))} onClick={() => cart.add(p)}>Añadir al carrito</button>
                         </div>
                     </article>
                 ))}

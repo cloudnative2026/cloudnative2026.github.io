@@ -61,4 +61,4 @@ export const apiRequest: SilentRequest = {
 
 // Cuando corre a través de Nginx (puerto 5500), las llamadas a /api/...
 // se redirigen automáticamente a ms-catalog o ms-orders según la ruta.
-export const API_BASE_URL = "https://u1ckcthd4l.execute-api.us-east-1.amazonaws.com";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";

@@ -27,6 +27,8 @@ export default function Navbar() {
                         Catalog
                     </NavLink>
                 </li>
+                <li><NavLink to="/cart">Carrito</NavLink></li>
+                <li><NavLink to="/orders">Mis pedidos</NavLink></li>
                 {isAdmin && (
                     <>
                         <li>

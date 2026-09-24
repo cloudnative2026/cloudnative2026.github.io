@@ -102,7 +102,16 @@ export const catalogApi = {
 //  Orders API  — GET /api/v1/orders
 // ============================================================
 
+export interface OrderRequest {
+    customerId: number;
+    items: { productId: number; quantity: number }[];
+}
+
 export const ordersApi = {
+    create: (token: string, body: OrderRequest) =>
+        apiFetch<Order>("/api/v1/orders", token, { method: "POST", body: JSON.stringify(body) }),
+    update: (token: string, id: number, body: OrderRequest) =>
+        apiFetch<Order>(`/api/v1/orders/${id}`, token, { method: "PUT", body: JSON.stringify(body) }),
     getAll: (token: string) =>
         apiFetch<Order[]>("/api/v1/orders", token),
 

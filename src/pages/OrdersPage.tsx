@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useApiToken } from "../auth/authHelpers";
+import { useIsAdmin, useApiToken } from "../auth/authHelpers";
 import { ordersApi, type Order } from "../api/client";
 import "./OrdersPage.css";
 
@@ -8,13 +8,19 @@ import "./OrdersPage.css";
 //  GET /api/v1/orders  |  PATCH /{id}/status  |  DELETE /{id}
 // ============================================================
 
-const ORDER_STATUSES = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
+const TRANSITIONS: Record<string, string[]> = {
+    CREADO: ["ACEPTADO", "CANCELADO"], ACEPTADO: ["EN_PREPARACION", "CANCELADO"],
+    EN_PREPARACION: ["DESPACHADO"], DESPACHADO: ["ENTREGADO"], ENTREGADO: [], CANCELADO: []
+};
 
 export default function OrdersPage() {
     const getToken = useApiToken();
+    const isAdmin = useIsAdmin();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [editing, setEditing] = useState<Order | null>(null);
+    const [editError, setEditError] = useState("");
     const [updatingId, setUpdatingId] = useState<number | null>(null);
 
     useEffect(() => {
@@ -50,6 +56,21 @@ export default function OrdersPage() {
         }
     }
 
+    async function saveEdit(event: React.FormEvent) {
+        event.preventDefault();
+        if (!editing || updatingId !== null) return;
+        setUpdatingId(editing.id); setEditError("");
+        try {
+            const updated = await ordersApi.update(await getToken(), editing.id, {
+                customerId: editing.customerId,
+                items: editing.items.map(i => ({ productId: i.productId, quantity: i.quantity }))
+            });
+            setOrders(previous => previous.map(o => o.id === updated.id ? updated : o));
+            setEditing(null);
+        } catch (error) { setEditError(String(error)); }
+        finally { setUpdatingId(null); }
+    }
+
     async function handleDelete(id: number) {
         if (!confirm(`Delete order #${id}?`)) return;
         setUpdatingId(id);
@@ -70,7 +91,21 @@ export default function OrdersPage() {
 
     return (
         <section className="orders-page">
-            <h2>Orders</h2>
+            <h2>{isAdmin ? "Todos los pedidos" : "Mis pedidos"}</h2>
+            {isAdmin && editing && <form onSubmit={saveEdit}>
+                <h3>Editar pedido #{editing.id}</h3>
+                {editError && <p role="alert">{editError}</p>}
+                <fieldset disabled={updatingId !== null}>
+                    <label>Número de cliente <input type="number" required min="1" max="2147483647" value={editing.customerId} onChange={e => setEditing({ ...editing, customerId: Number(e.target.value) })} /></label>
+                    {editing.items.map(item => <div key={item.productId}>
+                        <label>Producto #{item.productId} — Cantidad <input type="number" required min="1" max="100000" value={item.quantity} onChange={e => setEditing({ ...editing, items: editing.items.map(i => i.productId === item.productId ? { ...i, quantity: Number(e.target.value) } : i) })} /></label>
+                        <button type="button" disabled={editing.items.length === 1} onClick={() => setEditing({ ...editing, items: editing.items.filter(i => i.productId !== item.productId) })}>Quitar</button>
+                    </div>)}
+                    <p>Al guardar se aplican los precios actuales del catálogo.</p>
+                    <button type="submit">Guardar</button>
+                    <button type="button" onClick={() => setEditing(null)}>Cancelar</button>
+                </fieldset>
+            </form>}
             <div className="orders-table-wrapper">
                 <table className="orders-table">
                     <thead>
@@ -81,7 +116,7 @@ export default function OrdersPage() {
                             <th>Total</th>
                             <th>Items</th>
                             <th>Created</th>
-                            <th>Actions</th>
+                            {isAdmin && <th>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -90,21 +125,22 @@ export default function OrdersPage() {
                                 <td>{o.id}</td>
                                 <td>{o.customerId}</td>
                                 <td>
-                                    <select
+                                    {isAdmin ? <select
                                         value={o.status}
                                         disabled={updatingId === o.id}
                                         onChange={(e) => handleStatusChange(o.id, e.target.value)}
                                         className="status-select"
                                     >
-                                        {ORDER_STATUSES.map((s) => (
+                                        {[o.status, ...(TRANSITIONS[o.status] ?? [])].map((s) => (
                                             <option key={s} value={s}>{s}</option>
                                         ))}
-                                    </select>
+                                    </select> : o.status}
                                 </td>
                                 <td>${o.totalAmount.toFixed(2)}</td>
-                                <td>{o.items.length}</td>
+                                <td><details><summary>{o.items.length} productos</summary>{o.items.map(i => <p key={i.productId}>Producto #{i.productId}: {i.quantity} × ${Number(i.unitPrice).toFixed(2)}</p>)}</details></td>
                                 <td>{new Date(o.createdAt).toLocaleDateString()}</td>
-                                <td>
+                                {isAdmin && <td>
+                                    <button type="button" disabled={updatingId !== null || o.status !== "CREADO"} onClick={() => { setEditing({ ...o, items: o.items.map(i => ({ ...i })) }); setEditError(""); }}>Editar</button>
                                     <button
                                         type="button"
                                         className="btn-danger"
@@ -113,7 +149,7 @@ export default function OrdersPage() {
                                     >
                                         Delete
                                     </button>
-                                </td>
+                                </td>}
                             </tr>
                         ))}
                     </tbody>

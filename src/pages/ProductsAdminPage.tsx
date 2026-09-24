@@ -29,23 +29,21 @@ export default function ProductsAdminPage() {
     const [form, setForm] = useState<ProductRequest>(EMPTY_FORM);
 
     useEffect(() => {
+        let cancelled = false;
+        async function loadProducts() {
+            try {
+                const data = await catalogApi.getAll(await getToken());
+                if (!cancelled) setProducts(data);
+            } catch (err) {
+                if (!cancelled) setError(String(err));
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
         loadProducts();
+        return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    async function loadProducts() {
-        setLoading(true);
-        setError(null);
-        try {
-            const token = await getToken();
-            const data = await catalogApi.getAll(token);
-            setProducts(data);
-        } catch (err) {
-            setError(String(err));
-        } finally {
-            setLoading(false);
-        }
-    }
 
     function openCreate() {
         setForm(EMPTY_FORM);

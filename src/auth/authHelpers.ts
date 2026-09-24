@@ -1,29 +1,14 @@
 import { useMsal } from "@azure/msal-react";
 import { apiRequest } from "./msalConfig";
-import type { AccountInfo } from "@azure/msal-browser";
+import { usePermissions } from "./permissionsContext";
 import { InteractionRequiredAuthError } from "@azure/msal-browser";
 
 // ============================================================
 //  Claim names used by Entra ID tokens
 // ============================================================
 
-const ROLES_CLAIM = "roles";
-
-// ============================================================
-//  Role helpers
-// ============================================================
-
-function getRoles(account: AccountInfo | null): string[] {
-    if (!account) return [];
-    const claims = account.idTokenClaims as Record<string, unknown> | undefined;
-    const roles = claims?.[ROLES_CLAIM];
-    if (Array.isArray(roles)) return roles as string[];
-    return [];
-}
-
 export function useIsAdmin(): boolean {
-    const { accounts } = useMsal();
-    return getRoles(accounts[0] ?? null).includes("Admin");
+    return usePermissions().includes("Admin");
 }
 
 // ============================================================

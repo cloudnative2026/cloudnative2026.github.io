@@ -76,3 +76,25 @@ export default defineConfig([
 ])
 
 ```
+
+
+## Carrito y permisos de pedidos
+
+Los roles se leen del access token de CloudNative API: `Cliente` puede leer el
+catálogo, añadir al carrito, crear pedidos y consultar sus propios pedidos.
+`Admin` puede administrar productos y consultar, editar pedidos CREADO,
+cambiar su estado y eliminarlos. Los permisos existentes de `Operador` se
+mantienen en el backend. Las rutas administrativas del frontend son para Admin.
+Asignar los roles en la aplicación de API de Entra ID; una cuenta sin uno de
+estos roles no tiene acceso a la tienda.
+
+El carrito permanece en memoria durante la sesión y se vacía al cambiar de
+cuenta o recargar. El número de cliente es una referencia comercial requerida
+por la API; la propiedad del pedido depende del emisor y sujeto del token,
+nunca de ese número. El backend calcula los precios. Crear pedidos no reserva
+ni descuenta inventario.
+
+En desarrollo, Vite dirige `/api/catalog` a localhost:8080 y `/api/v1/orders`
+a localhost:8081. En Docker se usa el proxy Nginx existente. Para otra API,
+definir `VITE_API_BASE_URL` antes de compilar. Desplegar también los cambios
+de ms-orders y ms-catalog para habilitar el rol Cliente.

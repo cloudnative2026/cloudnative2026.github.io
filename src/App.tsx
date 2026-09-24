@@ -1,5 +1,9 @@
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useMsal } from "@azure/msal-react";
+import { PermissionsProvider } from "./auth/Permissions";
+import { CartProvider } from "./cart/CartContext";
+import CartPage from "./pages/CartPage";
 import Navbar from "./components/Navbar";
 import AdminRoute from "./components/AdminRoute";
 import LoginPage from "./pages/LoginPage";
@@ -20,11 +24,15 @@ import ProductsAdminPage from "./pages/ProductsAdminPage";
 // ============================================================
 
 function AppShell() {
+    const { accounts } = useMsal();
     return (
+        <PermissionsProvider key={accounts[0]?.homeAccountId}><CartProvider>
         <BrowserRouter>
             <Navbar />
             <Routes>
                 <Route path="/catalog" element={<CatalogPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
                 <Route
                     path="/admin/products"
                     element={
@@ -45,6 +53,7 @@ function AppShell() {
                 <Route path="*" element={<Navigate to="/catalog" replace />} />
             </Routes>
         </BrowserRouter>
+        </CartProvider></PermissionsProvider>
     );
 }
 
