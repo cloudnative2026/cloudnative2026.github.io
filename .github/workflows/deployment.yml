@@ -8,6 +8,7 @@ on:
       - "Dockerfile"
       - "src/**"
       - ".github/workflows/**"
+      - "nginx.conf"
   workflow_dispatch:
 
 jobs:
