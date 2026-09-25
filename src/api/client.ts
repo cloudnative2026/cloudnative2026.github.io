@@ -75,25 +75,25 @@ export interface Order {
 
 export const catalogApi = {
     getAll: (token: string) =>
-        apiFetch<Product[]>("/api/catalog/products", token),
+        apiFetch<Product[]>("/api/v1/catalog", token),
 
     getById: (token: string, id: number) =>
-        apiFetch<Product>(`/api/catalog/products/${id}`, token),
+        apiFetch<Product>(`/api/v1/catalog/${id}`, token),
 
     create: (token: string, body: ProductRequest) =>
-        apiFetch<Product>("/api/catalog/products", token, {
+        apiFetch<Product>("/api/v1/catalog/", token, {
             method: "POST",
             body: JSON.stringify(body)
         }),
 
     update: (token: string, id: number, body: ProductRequest) =>
-        apiFetch<Product>(`/api/catalog/products/${id}`, token, {
+        apiFetch<Product>(`/api/v1/catalog/${id}`, token, {
             method: "PUT",
             body: JSON.stringify(body)
         }),
 
     delete: (token: string, id: number) =>
-        apiFetch<void>(`/api/catalog/products/${id}`, token, {
+        apiFetch<void>(`/api/v1/catalog/${id}`, token, {
             method: "DELETE"
         })
 };
