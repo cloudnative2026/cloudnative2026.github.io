@@ -19,7 +19,7 @@ export default function Navbar() {
 
     return (
         <nav className="navbar">
-            <span className="navbar-brand">CloudNative</span>
+            <span className="navbar-brand">Pedidos360</span>
 
             <ul className="navbar-links">
                 <li>
@@ -28,7 +28,7 @@ export default function Navbar() {
                     </NavLink>
                 </li>
                 <li><NavLink to="/cart">Carrito</NavLink></li>
-                <li><NavLink to="/orders">Mis pedidos</NavLink></li>
+                {!isAdmin && <li><NavLink to="/orders">Mis pedidos</NavLink></li>}
                 {isAdmin && (
                     <>
                         <li>
