@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import CatalogPage from "./pages/CatalogPage";
 import OrdersPage from "./pages/OrdersPage";
 import ProductsAdminPage from "./pages/ProductsAdminPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 // ============================================================
 //  App
@@ -51,8 +52,8 @@ function AppShell() {
                         </AdminRoute>
                     }
                 />
-                {/* Default redirect */}
-                <Route path="*" element={<Navigate to="/catalog" replace />} />
+                <Route path="/" element={<Navigate to="/catalog" replace />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>
         </CartProvider></PermissionsProvider>
