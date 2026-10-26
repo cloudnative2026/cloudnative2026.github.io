@@ -18,7 +18,7 @@ export const msalConfig: Configuration = {
         authority: "https://login.microsoftonline.com/f9bce5c0-eb96-4341-aad7-411ae980b12a",
 
         // Debe coincidir EXACTAMENTE con el Redirect URI de Entra ID
-        redirectUri: "https://cloudnative2026.github.io"
+        redirectUri: import.meta.env.VITE_REDIRECT_URI || "https://cloudnative2026.github.io"
     },
 
     cache: {
@@ -59,6 +59,6 @@ export const apiRequest: SilentRequest = {
 };
 
 
-// Cuando corre a través de Nginx (puerto 5500), las llamadas a /api/...
-// se redirigen automáticamente a ms-catalog o ms-orders según la ruta.
-export const API_BASE_URL = "https://38lhfkxrxk.execute-api.us-east-1.amazonaws.com";
+// Cuando corre a través de Nginx (compose.yml, puerto 5173), las llamadas a /api/...
+// se redirigen automáticamente a ms-catalog, ms-orders o ms-notifications según la ruta.
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://u1ckcthd4l.execute-api.us-east-1.amazonaws.com";

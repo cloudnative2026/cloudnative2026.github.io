@@ -1,0 +1,21 @@
+.toasts {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+}
+
+.toast {
+    max-width: 320px;
+    padding: 12px 16px;
+    font-size: 14px;
+    text-align: left;
+    color: var(--text-h);
+    background: var(--bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}

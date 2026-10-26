@@ -5,6 +5,7 @@ import { PermissionsProvider } from "./auth/Permissions";
 import { CartProvider } from "./cart/CartContext";
 import CartPage from "./pages/CartPage";
 import Navbar from "./components/Navbar";
+import NotificationToasts from "./components/NotificationToasts";
 import AdminRoute from "./components/AdminRoute";
 import LoginPage from "./pages/LoginPage";
 import CatalogPage from "./pages/CatalogPage";
@@ -29,6 +30,7 @@ function AppShell() {
         <PermissionsProvider key={accounts[0]?.homeAccountId}><CartProvider>
         <BrowserRouter>
             <Navbar />
+            <NotificationToasts />
             <Routes>
                 <Route path="/catalog" element={<CatalogPage />} />
                 <Route path="/cart" element={<CartPage />} />
