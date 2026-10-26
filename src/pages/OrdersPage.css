@@ -1,71 +1,39 @@
-.orders-page {
-    padding: 32px;
-    text-align: left;
-}
-
-.orders-page h2 {
-    margin-bottom: 24px;
-}
-
-.orders-table-wrapper {
-    overflow-x: auto;
-}
-
-.orders-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-.orders-table th,
-.orders-table td {
-    text-align: left;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-}
-
-.orders-table th {
-    font-weight: 600;
-    color: var(--text-h);
-    background: var(--code-bg);
-}
-
-.orders-table tr.updating {
+.table tr.updating {
     opacity: 0.5;
     pointer-events: none;
 }
 
+.order-id,
+.order-total {
+    font-weight: 650;
+    color: var(--text-h);
+}
+
 .status-select {
     font-size: 13px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--bg);
+    padding: 5px 8px;
+    cursor: pointer;
+}
+
+.order-items summary {
+    cursor: pointer;
     color: var(--text-h);
-    cursor: pointer;
 }
 
-.btn-danger {
+.order-items ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     font-size: 13px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #ef4444;
-    background: transparent;
-    color: #ef4444;
-    cursor: pointer;
-    transition: background 0.15s;
+    color: var(--muted);
 }
 
-.btn-danger:hover:not(:disabled) {
-    background: #ef4444;
-    color: #fff;
+.order-items li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    white-space: nowrap;
 }
-
-.btn-danger:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.cart-line { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 1rem 0; }
-.orders-page fieldset { border: 1px solid #ccc; padding: 1rem; }
-.orders-page input { margin: .5rem; padding: .4rem; max-width: 10rem; }

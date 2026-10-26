@@ -68,7 +68,7 @@ export default function NotificationToasts() {
         <div className="toasts" aria-live="polite">
             {toasts.map((t) => (
                 <div key={t.id} className="toast" role="status">
-                    {t.content} <Link to="/orders">Ver pedidos</Link>
+                    <span>{t.content}</span> <Link to="/orders">Ver pedidos</Link>
                 </div>
             ))}
         </div>

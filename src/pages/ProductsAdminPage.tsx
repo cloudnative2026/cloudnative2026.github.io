@@ -91,70 +91,82 @@ export default function ProductsAdminPage() {
             }
             closeModal();
         } catch (err) {
-            alert(`Save failed: ${err}`);
+            alert(`No se pudo guardar: ${err}`);
         } finally {
             setSaving(false);
         }
     }
 
     async function handleDelete(id: number) {
-        if (!confirm(`Delete product #${id}?`)) return;
+        if (!confirm(`¿Eliminar el producto #${id}?`)) return;
         try {
             const token = await getToken();
             await catalogApi.delete(token, id);
             setProducts((prev) => prev.filter((p) => p.id !== id));
         } catch (err) {
-            alert(`Delete failed: ${err}`);
+            alert(`No se pudo eliminar: ${err}`);
         }
     }
 
-    if (loading) return <p className="page-status">Loading products…</p>;
+    if (loading) return <p className="page-status">Cargando productos…</p>;
     if (error) return <p className="page-status error">Error: {error}</p>;
 
     return (
-        <section className="padmin-page">
-            <div className="padmin-header">
-                <h2>Manage Products</h2>
-                <button type="button" className="btn-primary" onClick={openCreate}>
-                    + New Product
+        <section className="page">
+            <div className="page-header">
+                <div>
+                    <h1>Productos</h1>
+                    <p className="page-subtitle">{products.length} productos en el catálogo</p>
+                </div>
+                <button type="button" className="btn btn-primary" onClick={openCreate}>
+                    + Nuevo producto
                 </button>
             </div>
 
-            <div className="orders-table-wrapper">
-                <table className="orders-table">
+            <div className="card table-wrapper">
+                <table className="table">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Active</th>
-                            <th>Actions</th>
+                            <th>Nombre</th>
+                            <th className="num">Precio</th>
+                            <th className="num">Stock</th>
+                            <th>Estado</th>
+                            <th className="num">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((p) => (
                             <tr key={p.id}>
-                                <td>{p.id}</td>
-                                <td>{p.name}</td>
-                                <td>${Number(p.price).toFixed(2)}</td>
-                                <td>{p.stock}</td>
-                                <td>{p.active ? "✔" : "✘"}</td>
-                                <td className="action-cell">
-                                    <button
-                                        type="button"
-                                        className="btn-secondary"
-                                        onClick={() => openEdit(p)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn-danger"
-                                        onClick={() => handleDelete(p.id)}
-                                    >
-                                        Delete
-                                    </button>
+                                <td className="padmin-id">{p.id}</td>
+                                <td>
+                                    <div className="padmin-name">
+                                        <div className="padmin-thumb">
+                                            {p.imageUrl ? <img src={p.imageUrl} alt="" /> : <span aria-hidden="true">{p.name.charAt(0)}</span>}
+                                        </div>
+                                        {p.name}
+                                    </div>
+                                </td>
+                                <td className="num">${Number(p.price).toFixed(2)}</td>
+                                <td className="num">{p.stock}</td>
+                                <td>{p.active ? <span className="badge badge-success">Activo</span> : <span className="badge">Inactivo</span>}</td>
+                                <td>
+                                    <div className="actions">
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary btn-sm"
+                                            onClick={() => openEdit(p)}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() => handleDelete(p.id)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -166,16 +178,17 @@ export default function ProductsAdminPage() {
             {editingId !== null && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div
-                        className="modal"
+                        className="modal card"
                         role="dialog"
                         aria-modal="true"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h3>{editingId === "new" ? "New Product" : `Edit Product #${editingId}`}</h3>
-                        <form onSubmit={handleSubmit} className="product-form">
-                            <label>
-                                Name
+                        <h3>{editingId === "new" ? "Nuevo producto" : `Editar producto #${editingId}`}</h3>
+                        <form onSubmit={handleSubmit} className="form">
+                            <label className="field">
+                                Nombre
                                 <input
+                                    className="input"
                                     name="name"
                                     required
                                     maxLength={200}
@@ -183,9 +196,10 @@ export default function ProductsAdminPage() {
                                     onChange={handleChange}
                                 />
                             </label>
-                            <label>
-                                Description
+                            <label className="field">
+                                Descripción
                                 <textarea
+                                    className="input"
                                     name="description"
                                     rows={3}
                                     maxLength={4000}
@@ -194,9 +208,10 @@ export default function ProductsAdminPage() {
                                 />
                             </label>
                             <div className="form-row">
-                                <label>
-                                    Price
+                                <label className="field">
+                                    Precio
                                     <input
+                                        className="input"
                                         name="price"
                                         type="number"
                                         min={0}
@@ -206,9 +221,10 @@ export default function ProductsAdminPage() {
                                         onChange={handleChange}
                                     />
                                 </label>
-                                <label>
+                                <label className="field">
                                     Stock
                                     <input
+                                        className="input"
                                         name="stock"
                                         type="number"
                                         min={0}
@@ -218,9 +234,10 @@ export default function ProductsAdminPage() {
                                     />
                                 </label>
                             </div>
-                            <label>
-                                Image URL
+                            <label className="field">
+                                URL de imagen
                                 <input
+                                    className="input"
                                     name="imageUrl"
                                     type="url"
                                     maxLength={2048}
@@ -235,22 +252,22 @@ export default function ProductsAdminPage() {
                                     checked={form.active}
                                     onChange={handleChange}
                                 />
-                                Active
+                                Activo
                             </label>
                             <div className="form-actions">
                                 <button
                                     type="button"
-                                    className="btn-secondary"
+                                    className="btn btn-secondary"
                                     onClick={closeModal}
                                 >
-                                    Cancel
+                                    Cancelar
                                 </button>
                                 <button
                                     type="submit"
-                                    className="btn-primary"
+                                    className="btn btn-primary"
                                     disabled={saving}
                                 >
-                                    {saving ? "Saving…" : "Save"}
+                                    {saving ? "Guardando…" : "Guardar"}
                                 </button>
                             </div>
                         </form>

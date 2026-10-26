@@ -30,9 +30,9 @@ export default function LoginPage() {
                         <path fill="#ffb900" d="M50 50h46v46H50z" />
                     </svg>
                 </div>
-                <h1>CloudNative</h1>
+                <h1>Pedidos360</h1>
                 <p className="login-subtitle">
-                    Sign in with your organizational account to continue.
+                    Inicia sesión con tu cuenta de la organización para continuar.
                 </p>
                 <button
                     type="button"
@@ -41,11 +41,11 @@ export default function LoginPage() {
                 >
                     <svg viewBox="0 0 96 96" aria-hidden="true" className="ms-icon">
                         <path fill="#f25022" d="M0 0h46v46H0z" />
-                        <path fill="#7fba00" d="M50 0h46v46H0z" />
+                        <path fill="#7fba00" d="M50 0h46v46H50z" />
                         <path fill="#00a4ef" d="M0 50h46v46H0z" />
                         <path fill="#ffb900" d="M50 50h46v46H50z" />
                     </svg>
-                    Sign in with Microsoft
+                    Iniciar sesión con Microsoft
                 </button>
             </div>
         </main>
