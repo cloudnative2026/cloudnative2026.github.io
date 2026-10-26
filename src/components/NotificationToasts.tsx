@@ -50,11 +50,13 @@ export default function NotificationToasts() {
                             if (data) show(JSON.parse(data));
                         }
                     }
+                    // El servidor cierra tras cada aviso o al expirar: reconectar al tiro.
+                    continue;
                 } catch (err) {
                     if (controller.signal.aborted) return;
                     console.warn("Notificaciones desconectadas:", err);
                 }
-                // Reconectar tras un corte o el timeout del servidor.
+                // Esperar antes de reintentar tras un error.
                 await new Promise((resolve) => setTimeout(resolve, 3000));
             }
         }
