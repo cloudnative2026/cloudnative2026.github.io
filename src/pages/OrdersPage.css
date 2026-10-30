@@ -37,3 +37,10 @@
     gap: 16px;
     white-space: nowrap;
 }
+
+.receipt-panel { margin-top: 28px; padding: 24px; }
+.receipt-heading, .receipt-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.receipt-heading h2 { margin: 0 0 8px; }
+.receipt-actions { justify-content: flex-start; margin: 24px 0 16px; }
+.receipt-preview { display: block; width: 100%; height: 650px; border: 1px solid var(--border, #dce3ea); border-radius: 12px; background: white; }
+@media (max-width: 640px) { .receipt-panel { padding: 16px; } .receipt-preview { height: 560px; } }

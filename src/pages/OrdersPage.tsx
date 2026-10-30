@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useIsAdmin, useApiToken } from "../auth/authHelpers";
 import { ordersApi, type Order } from "../api/client";
 import "./OrdersPage.css";
+import OrderReceipt from "../components/OrderReceipt";
 
 // ============================================================
 //  Orders Page — all orders for Admin, own orders otherwise
@@ -26,6 +27,7 @@ const STATUS: Record<string, { label: string; badge: string }> = {
 export default function OrdersPage() {
     const getToken = useApiToken();
     const isAdmin = useIsAdmin();
+    const [receiptOrderId, setReceiptOrderId] = useState<number | null>(null);
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -71,6 +73,7 @@ export default function OrdersPage() {
             const token = await getToken();
             await ordersApi.delete(token, id);
             setOrders((prev) => prev.filter((o) => o.id !== id));
+            if (receiptOrderId === id) setReceiptOrderId(null);
         } catch (err) {
             alert(`No se pudo eliminar el pedido: ${err}`);
         } finally {
@@ -105,6 +108,7 @@ export default function OrdersPage() {
                                 <th>Productos</th>
                                 <th>Fecha</th>
                                 <th className="num">Total</th>
+                                <th>Boleta</th>
                                 {isAdmin && <th className="num">Acciones</th>}
                             </tr>
                         </thead>
@@ -138,6 +142,11 @@ export default function OrdersPage() {
                                     </td>
                                     <td>{new Date(o.createdAt).toLocaleDateString("es-CL")}</td>
                                     <td className="num order-total">${o.totalAmount.toFixed(2)}</td>
+                                    <td><button type="button" className="btn btn-sm"
+                                        disabled={updatingId === o.id}
+                                        onClick={() => setReceiptOrderId(o.id)}>
+                                        {receiptOrderId === o.id ? "Boleta seleccionada" : "Generar / ver boleta"}
+                                    </button></td>
                                     {isAdmin && <td>
                                         <div className="actions">
                                             <button
@@ -156,6 +165,8 @@ export default function OrdersPage() {
                     </table>
                 </div>
             )}
+            {receiptOrderId !== null && <OrderReceipt key={receiptOrderId} orderId={receiptOrderId}
+                onClose={() => setReceiptOrderId(null)} />}
         </section>
     );
 }

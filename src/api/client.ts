@@ -102,12 +102,25 @@ export const catalogApi = {
 //  Orders API  — GET /api/v1/orders
 // ============================================================
 
+export interface Receipt {
+    orderId: number;
+    status: "NOT_REQUESTED" | "PENDING" | "READY";
+    number: string | null;
+    requestedAt: string | null;
+    generatedAt: string | null;
+    html: string | null;
+}
+
 export interface OrderRequest {
     customerId: number;
     items: { productId: number; quantity: number }[];
 }
 
 export const ordersApi = {
+    requestReceipt: (token: string, id: number) =>
+        apiFetch<Receipt>(`/api/v1/orders/${id}/receipt`, token, { method: "POST" }),
+    getReceipt: (token: string, id: number) =>
+        apiFetch<Receipt>(`/api/v1/orders/${id}/receipt`, token),
     create: (token: string, body: OrderRequest) =>
         apiFetch<Order>("/api/v1/orders", token, { method: "POST", body: JSON.stringify(body) }),
     update: (token: string, id: number, body: OrderRequest) =>
