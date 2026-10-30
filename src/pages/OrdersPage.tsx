@@ -28,6 +28,7 @@ export default function OrdersPage() {
     const getToken = useApiToken();
     const isAdmin = useIsAdmin();
     const [receiptOrderId, setReceiptOrderId] = useState<number | null>(null);
+    const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -39,6 +40,11 @@ export default function OrdersPage() {
         async function load() {
             try {
                 const token = await getToken();
+                // This only fills missing contact data for the token owner, never other customers.
+                try {
+                    const contact = await ordersApi.syncNotificationContact(token);
+                    if (!cancelled) setEmailAvailable(contact.emailAvailable);
+                } catch { /* Contact synchronization must not prevent loading orders. */ }
                 const data = await ordersApi.getAll(token);
                 if (!cancelled) setOrders(data);
             } catch (err) {
@@ -92,6 +98,9 @@ export default function OrdersPage() {
                     <p className="page-subtitle">{orders.length} {orders.length === 1 ? "pedido" : "pedidos"}</p>
                 </div>
             </div>
+            {emailAvailable === false && <p className="page-subtitle" role="status">
+                Tu cuenta no proporciona un correo para los avisos de estado. Puedes seguir consultando tus pedidos aquí.
+            </p>}
             {orders.length === 0 ? (
                 <div className="card empty-state">
                     <h3>Aún no hay pedidos</h3>

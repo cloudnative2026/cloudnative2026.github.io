@@ -117,6 +117,8 @@ export interface OrderRequest {
 }
 
 export const ordersApi = {
+    syncNotificationContact: (token: string) =>
+        apiFetch<{ emailAvailable: boolean }>("/api/v1/orders/notification-contact", token, { method: "POST" }),
     requestReceipt: (token: string, id: number) =>
         apiFetch<Receipt>(`/api/v1/orders/${id}/receipt`, token, { method: "POST" }),
     getReceipt: (token: string, id: number) =>
