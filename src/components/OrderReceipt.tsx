@@ -27,13 +27,19 @@ export default function OrderReceipt({ orderId, onClose }: { orderId: number; on
                 if (!cancelled) setError("No pudimos consultar la boleta. Inténtalo nuevamente.");
             }
         }
-        setReceipt(null);
-        setError("");
         void poll(true);
         return () => { cancelled = true; clearTimeout(timer); };
     // Token retrieval uses the current MSAL account; polling is scoped to this selected order.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [orderId, attempt]);
+
+    // OrdersPage remounts this component with key={orderId} when selection changes.
+    // A retry resets its state in the user event, before starting a new polling effect.
+    function retry() {
+        setReceipt(null);
+        setError("");
+        setAttempt(n => n + 1);
+    }
 
     function download() {
         if (!receipt?.html) return;
@@ -50,7 +56,7 @@ export default function OrderReceipt({ orderId, onClose }: { orderId: number; on
                 <p className="page-subtitle">Comprobante con el detalle y los precios de tu pedido.</p></div>
             <button type="button" className="btn btn-sm" onClick={onClose}>Cerrar</button>
         </div>
-        {error ? <div role="alert"><p>{error}</p><button type="button" className="btn btn-primary" onClick={() => setAttempt(n => n + 1)}>Volver a consultar</button></div>
+        {error ? <div role="alert"><p>{error}</p><button type="button" className="btn btn-primary" onClick={retry}>Volver a consultar</button></div>
             : receipt?.status !== "READY" ? <p role="status">Estamos preparando tu boleta. Aparecerá aquí automáticamente…</p>
             : <><div className="receipt-actions">
                 <span className="badge badge-success">Disponible · {receipt.number}</span>
