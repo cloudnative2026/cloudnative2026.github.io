@@ -143,3 +143,75 @@ export const ordersApi = {
     delete: (token: string, id: number) =>
         apiFetch<void>(`/api/v1/orders/${id}`, token, { method: "DELETE" })
 };
+
+// ============================================================
+//  BFF API (Admin) — /api/v1/bff → ms-report / ms-audit
+// ============================================================
+
+export interface Kpis {
+    orders: number;
+    deliveredOrders: number;
+    cancelledOrders: number;
+    revenue: number;
+    averageTicket: number;
+    averageLeadTimeHours: number | null;
+}
+
+export interface SalesPoint { date: string; orders: number; revenue: number }
+export interface LeadTimePoint { date: string; deliveredOrders: number; averageHours: number | null }
+export interface TopProduct { productId: number; name: string | null; quantity: number; revenue: number }
+
+export interface Dashboard {
+    from: string;
+    to: string;
+    kpis: Kpis;
+    sales: SalesPoint[];
+    leadTime: LeadTimePoint[];
+    topProducts: TopProduct[];
+    generatedAt: string;
+}
+
+export interface AuditEvent {
+    eventId: string;
+    eventType: string;
+    entityType: string;
+    entityId: string;
+    actorSubject: string | null;
+    actorName: string | null;
+    actorRoles: string[];
+    occurredAt: string;
+    sourceIp: string | null;
+    userAgent: string | null;
+    sourceService: string | null;
+    detail: string | null;
+}
+
+export interface AuditPage { content: AuditEvent[]; totalElements: number; page: number; size: number }
+
+export interface AuditFilters {
+    user?: string;
+    type?: string;
+    orderId?: number;
+    from?: string;
+    to?: string;
+    page?: number;
+    size?: number;
+}
+
+function query(params: Record<string, string | number | undefined>) {
+    const search = new URLSearchParams();
+    for (const [key, value] of Object.entries(params))
+        if (value !== undefined && value !== "") search.set(key, String(value));
+    return search.toString();
+}
+
+export const bffApi = {
+    dashboard: (token: string, from: string, to: string) =>
+        apiFetch<Dashboard>(`/api/v1/bff/reports/dashboard?${query({ from, to })}`, token),
+
+    auditEvents: (token: string, filters: AuditFilters) =>
+        apiFetch<AuditPage>(`/api/v1/bff/audit/events?${query({ ...filters })}`, token),
+
+    auditEventTypes: (token: string) =>
+        apiFetch<string[]>("/api/v1/bff/audit/event-types", token)
+};
