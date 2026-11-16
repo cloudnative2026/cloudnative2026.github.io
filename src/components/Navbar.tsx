@@ -33,6 +33,8 @@ export default function Navbar() {
                             <>
                                 <li><NavLink to="/admin/products">Productos</NavLink></li>
                                 <li><NavLink to="/admin/orders">Pedidos</NavLink></li>
+                                <li><NavLink to="/reports">Reportes</NavLink></li>
+                                <li><NavLink to="/audit">Auditoría</NavLink></li>
                             </>
                         )}
                     </ul>
